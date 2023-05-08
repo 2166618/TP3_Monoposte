@@ -10,10 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.example.model.Charite;
-import org.example.model.FactureAvecDons;
-import org.example.model.FactureException;
-import org.example.model.ModeDePaiement;
+import org.example.model.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -27,7 +24,9 @@ import java.util.regex.Pattern;
  */
 public class CreerUneFactureGraphicalController {
     DecimalFormat decimalFormat = new DecimalFormat("0.00");
-    Charite charite = new Charite();
+
+    Archive archive = new Archive();
+    Charite charite;
     @FXML
     private Label afficheChariteDUneFacture;
 
@@ -170,6 +169,10 @@ public class CreerUneFactureGraphicalController {
         return charite;
     }
 
+    public Archive getArchive() {
+        return archive;
+    }
+
     public void recupererLesInformationsEntreesDansLaCreationDeLaFacture() {
         double totalSansTaxesTemp = 0.00;
         double taxesApplicablesTemps = 0.00;
@@ -183,19 +186,12 @@ public class CreerUneFactureGraphicalController {
             } catch (NumberFormatException e) {
                 getMessageErreur().setText(e.getMessage());
             }
-            try {
-                if (taxesApplicablesTemps >= totalSansTaxesTemp){
-                    throw new FactureException("Le montant doit être supérieur aux taxes");
-                }
-            }catch (FactureException e){
-                getMessageErreur().setText(e.getMessage());
-                paneErreur.setVisible(true);
-            }
 
             ModeDePaiement modeDePaiementTemp = getChoisirUnModeDePaiement().getValue();
             FactureAvecDons facture = new FactureAvecDons(nomDeLAcheteurTemp, totalSansTaxesTemp, taxesApplicablesTemps, modeDePaiementTemp);
-            charite.ajouterUneFacture(facture);
+            archive.ajouterUneFacture(facture);
             afficherLesDetailsDeLaFactureFinale(facture);
+            charite = new Charite(archive.getFactures());
             charite.calculDuTotalDesDons();
 
         } else {
@@ -229,11 +225,8 @@ public class CreerUneFactureGraphicalController {
         try {
             if (getTotalSansTaxes().getText() == "" || getTaxesApplicables().getText() == ""){
                 throw new NumberFormatException("Veuillez remplir tous les champs");
-            }else if (!getTotalSansTaxes().getText().matches("-?\\d+(\\.\\d+)?") || !getTaxesApplicables().getText().matches("-?\\d+(\\.\\d+)?")
-                        || getTotalSansTaxes().getText().matches("^[a-zA-Z]+$") || getTaxesApplicables().getText().matches("^[a-zA-Z]+$")){
-                throw new FactureException("Les montants et les taxes doivent contenir uniquement des chiffres.");
-            }else if (Double.parseDouble(getTotalSansTaxes().getText()) < 0 || Double.parseDouble(getTaxesApplicables().getText() )< 0){
-                throw new FactureException("Les montants et les taxes doivent être positifs");
+            }else if (!getTotalSansTaxes().getText().matches("^-?[0-9]+(\\.[0-9]+)?$") || !getTaxesApplicables().getText().matches("^-?[0-9]+(\\.[0-9]+)?$")){
+                throw new FactureException("Le montant total et les taxes applicables doivent contenir uniquement des chiffres, un point et/ou un signe -.");
             }else{
                 montantsValides = true;
             }
@@ -250,6 +243,12 @@ public class CreerUneFactureGraphicalController {
     public void afficherLesDetailsDeLaFactureFinale(FactureAvecDons facture) {
         getAfficheTotalFacture().setText(String.valueOf(decimalFormat.format((facture.getTotalAvecTaxes()))));
         getAfficheChariteDUneFacture().setText(String.valueOf(decimalFormat.format(facture.getDonDeLaFacture())));
+    }
+
+    public void procederAuRemboursement(FactureAvecDons facture){
+
+
+
     }
 
     @FXML

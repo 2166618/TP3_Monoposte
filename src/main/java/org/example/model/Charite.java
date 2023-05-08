@@ -12,10 +12,17 @@ public class Charite {
 
     //Attributs
     private double totalDesDons;
-    private List<FactureAvecDons> factures = new ArrayList<>();
+    private List<FactureAvecDons> factures;
 
     //Constructeur par défaut
     public Charite() {
+    }
+
+    //Constructeur qui reçoit la liste des factures en paramètre
+
+
+    public Charite(List<FactureAvecDons> factures) {
+        this.factures = factures;
     }
 
     /**
@@ -46,11 +53,4 @@ public class Charite {
         this.factures = factures;
     }
 
-    /**
-     * Méthode permettant d'ajouter une facture à la liste de factures
-     * @param facture
-     */
-    public void ajouterUneFacture(FactureAvecDons facture){
-        this.factures.add(facture);
-    }
 }

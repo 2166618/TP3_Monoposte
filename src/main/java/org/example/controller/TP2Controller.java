@@ -13,7 +13,7 @@ import org.example.model.Ecran;
 
 import java.text.DecimalFormat;
 
-public class TP2Controller  extends Application {
+public class  TP2Controller  extends Application {
     //DecimalFormat decimalFormat = new DecimalFormat("0.00");
     Charite charite = new Charite();
     private static Ecran ecran = new Ecran();
