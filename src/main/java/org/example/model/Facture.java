@@ -2,22 +2,23 @@ package org.example.model;
 
 public interface Facture {
 
-    public void setNomDeLAcheteur(String nomDeLAcheteur);
+    String getNomDeLAcheteur();
+    void setNomDeLAcheteur(String nomDeLAcheteur);
 
-    public double getTotalSansTaxes();
+    double getTotalSansTaxes();
 
-    public void setTotalSansTaxes(double totalSansTaxes);
+    void setTotalSansTaxes(double totalSansTaxes);
 
-    public double getTaxesApplicablesAuMomentDeLAchat();
+    double getTaxesApplicablesAuMomentDeLAchat();
 
-    public void setTaxesApplicablesAuMomentDeLAchat(double taxesApplicablesAuMomentDeLAchat);
+    void setTaxesApplicablesAuMomentDeLAchat(double taxesApplicablesAuMomentDeLAchat);
 
-    public ModeDePaiement getModeDePaiement();
+    ModeDePaiement getModeDePaiement();
 
-    public void setModeDePaiement(ModeDePaiement modeDePaiement);
+    void setModeDePaiement(ModeDePaiement modeDePaiement);
 
-    public double getTotalAvecTaxes();
+    double getTotalAvecTaxes();
 
-    public void setTotalAvecTaxes(double totalAvecTaxes);
+    void setTotalAvecTaxes(double totalAvecTaxes);
 
 }

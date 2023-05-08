@@ -14,6 +14,7 @@ import org.example.model.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,7 @@ public class CreerUneFactureGraphicalController {
     DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     Archive archive = new Archive();
-    Charite charite;
+    Charite charite = new Charite();
     @FXML
     private Label afficheChariteDUneFacture;
 
@@ -173,6 +174,11 @@ public class CreerUneFactureGraphicalController {
         return archive;
     }
 
+    /**
+     * Les informations entrees lors de la création de la facture sont récupérées et un objet FactureAvecDons et créer à
+     * partir de ces informations. Ensuite le traitement approprié s'en suit dépendamment si le totalSansTaxes est positif,
+     * négatif(remboursement) ou égale à zéro.
+     */
     public void recupererLesInformationsEntreesDansLaCreationDeLaFacture() {
         double totalSansTaxesTemp = 0.00;
         double taxesApplicablesTemps = 0.00;
@@ -186,18 +192,58 @@ public class CreerUneFactureGraphicalController {
             } catch (NumberFormatException e) {
                 getMessageErreur().setText(e.getMessage());
             }
-
             ModeDePaiement modeDePaiementTemp = getChoisirUnModeDePaiement().getValue();
-            FactureAvecDons facture = new FactureAvecDons(nomDeLAcheteurTemp, totalSansTaxesTemp, taxesApplicablesTemps, modeDePaiementTemp);
-            archive.ajouterUneFacture(facture);
-            afficherLesDetailsDeLaFactureFinale(facture);
-            charite = new Charite(archive.getFactures());
-            charite.calculDuTotalDesDons();
 
+            FactureAvecDons facture = new FactureAvecDons(nomDeLAcheteurTemp, totalSansTaxesTemp, taxesApplicablesTemps, modeDePaiementTemp);
+            afficherLesDetailsDeLaFactureFinale(facture);
+            charite.setFactures(archive.getFactures());
+            if (totalSansTaxesTemp > 0) {
+                archive.ajouterUneFacture(facture);
+                charite.calculDuTotalDesDons();
+            } else if (totalSansTaxesTemp < 0) {
+                procederAuRemboursement(facture);
+            } else {
+                if(!archive.getFactures().contains(facture)){
+                    archive.ajouterUneFacture(facture);
+                }
+            }
         } else {
             paneErreur.setVisible(true);
         }
 
+    }
+
+    public void afficherLesDetailsDeLaFactureFinale(FactureAvecDons facture) {
+        getAfficheTotalFacture().setText(String.valueOf(decimalFormat.format((facture.getTotalAvecTaxes()))));
+        getAfficheChariteDUneFacture().setText(String.valueOf(decimalFormat.format(facture.getDonDeLaFacture())));
+    }
+
+    /**
+     * Compare la factureRemboursee aux factures de la liste de factures des archives sans tenir compte du signe - des montants.
+     * Lorsque trouvée, celle-ci est retirée de la la liste de factures, ajoutée à la liste de factureRemboursees et les dons
+     * de la facture sont retirés du total des dons de la Charité.
+     *
+     * @param factureRemboursee
+     */
+    public void procederAuRemboursement(FactureAvecDons factureRemboursee) {
+        Iterator<FactureAvecDons> it = archive.getFactures().iterator();
+        while (it.hasNext()) {
+            FactureAvecDons facture = it.next();
+            if (facture.getNomDeLAcheteur() == factureRemboursee.getNomDeLAcheteur() &&
+                    Math.abs(facture.getTotalSansTaxes()) == Math.abs(factureRemboursee.getTotalSansTaxes()) &&
+                    Math.abs(facture.getTaxesApplicablesAuMomentDeLAchat()) == Math.abs(factureRemboursee.getTaxesApplicablesAuMomentDeLAchat()) &&
+                    facture.getModeDePaiement() == factureRemboursee.getModeDePaiement()) {
+                it.remove();
+                archive.ajouterUneFactureRemboursee(facture);
+                retirerLeDonDeLaFactureDuTotalDesDons(facture);
+            }
+        }
+        System.out.println(archive.getFactures());
+        System.out.println(archive.getFacturesRemboursees());
+    }
+
+    public void retirerLeDonDeLaFactureDuTotalDesDons(FactureAvecDons factureRemboursee) {
+        charite.setTotalDesDons(charite.getTotalDesDons() - factureRemboursee.getDonDeLaFacture());
     }
 
     public boolean validerLeNomDeLAcheteur() {
@@ -208,7 +254,7 @@ public class CreerUneFactureGraphicalController {
             //validation sur le nom
             if (getNomDeLAcheteur().getText() == "") {
                 throw new FactureException("Veuillez rentrer le nom de l'acheteur");
-            } else if ((getNomDeLAcheteur().getText()).length() < 3 || matcher.matches()) {
+            } else if ((getNomDeLAcheteur().getText()).length() < 2 || matcher.matches()) {
                 throw new FactureException("Le nom de l'acheteur est invalide");
             } else {
                 nomValide = true;
@@ -220,14 +266,14 @@ public class CreerUneFactureGraphicalController {
         return nomValide;
     }
 
-    public boolean validerLesMontants(){
+    public boolean validerLesMontants() {
         boolean montantsValides = false;
         try {
-            if (getTotalSansTaxes().getText() == "" || getTaxesApplicables().getText() == ""){
+            if (getTotalSansTaxes().getText() == "" || getTaxesApplicables().getText() == "") {
                 throw new NumberFormatException("Veuillez remplir tous les champs");
-            }else if (!getTotalSansTaxes().getText().matches("^-?[0-9]+(\\.[0-9]+)?$") || !getTaxesApplicables().getText().matches("^-?[0-9]+(\\.[0-9]+)?$")){
+            } else if (!getTotalSansTaxes().getText().matches("^-?[0-9]+(\\.[0-9]+)?$") || !getTaxesApplicables().getText().matches("^-?[0-9]+(\\.[0-9]+)?$")) {
                 throw new FactureException("Le montant total et les taxes applicables doivent contenir uniquement des chiffres, un point et/ou un signe -.");
-            }else{
+            } else {
                 montantsValides = true;
             }
         } catch (NumberFormatException e) {
@@ -237,18 +283,6 @@ public class CreerUneFactureGraphicalController {
         }
 
         return montantsValides;
-    }
-
-
-    public void afficherLesDetailsDeLaFactureFinale(FactureAvecDons facture) {
-        getAfficheTotalFacture().setText(String.valueOf(decimalFormat.format((facture.getTotalAvecTaxes()))));
-        getAfficheChariteDUneFacture().setText(String.valueOf(decimalFormat.format(facture.getDonDeLaFacture())));
-    }
-
-    public void procederAuRemboursement(FactureAvecDons facture){
-
-
-
     }
 
     @FXML

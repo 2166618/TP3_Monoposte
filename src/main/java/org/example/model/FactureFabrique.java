@@ -28,7 +28,6 @@ public class FactureFabrique implements Facture {
         return nomDeLAcheteur;
 
     }
-
     public void setNomDeLAcheteur(String nomDeLAcheteur) {
         this.nomDeLAcheteur = nomDeLAcheteur;
     }

@@ -9,20 +9,12 @@ import java.util.List;
  */
 public class Charite {
 
-
     //Attributs
     private double totalDesDons;
     private List<FactureAvecDons> factures;
 
     //Constructeur par défaut
     public Charite() {
-    }
-
-    //Constructeur qui reçoit la liste des factures en paramètre
-
-
-    public Charite(List<FactureAvecDons> factures) {
-        this.factures = factures;
     }
 
     /**

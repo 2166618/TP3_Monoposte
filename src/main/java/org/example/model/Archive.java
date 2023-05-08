@@ -27,4 +27,8 @@ public class Archive {
     public void ajouterUneFacture(FactureAvecDons facture){
         this.factures.add(facture);
     }
+
+    public void ajouterUneFactureRemboursee(FactureAvecDons facture){
+        this.facturesRemboursees.add(facture);
+    }
 }
