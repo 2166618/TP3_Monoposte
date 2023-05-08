@@ -1,0 +1,39 @@
+/* Chris Tania Meyou Lemanga et Veronique Tavares
+ TP2 - CSS
+ system de facturation du magasin TopVentes */
+
+#background{
+    -fx-background-color: #C7EBF0;
+	-fx-fill : #242424;
+}
+
+.button
+{
+	-fx-background-color: #DBEEF3;
+	-fx-font-weight: bold;
+	-fx-border-color: #B3C3C7;  
+	-fx-border-width: 2px;  
+}
+
+#afficheMontantDonsCharite
+{
+	-fx-border-color: #242424;  
+	-fx-border-width: 2px;  
+}
+
+#exitButton
+{
+	-fx-background-color: #FF5844;
+	-fx-font-weight: bold; 
+	-fx-border-color: black;  
+	-fx-border-width: 2px;  
+}
+
+#menuBar{
+	-fx-background-color: #FCEBDD;
+	
+}
+
+/*Label{*/
+/* -fx-text-fill: 20px;*/
+/*}*/

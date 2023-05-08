@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@TP2.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.CreerUneFactureGraphicalController">
+   <children>
+      <MenuBar id="menuBar" stylesheets="@TP2.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu id="menuBar" mnemonicParsing="false" text="Créer une facture">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TextField id="textField" fx:id="nomDeLAcheteur" layoutX="272.0" layoutY="122.0" />
+      <TextField id="textField" fx:id="totalSansTaxes" layoutX="272.0" layoutY="172.0" />
+      <TextField id="textField" fx:id="taxesApplicables" layoutX="272.0" layoutY="220.0" />
+      <ChoiceBox fx:id="choisirUnModeDePaiement" layoutX="272.0" layoutY="270.0" prefHeight="25.0" prefWidth="149.0" stylesheets="@TP2.css" />
+      <Button id="boutonConfirmer" fx:id="boutonConfirmerLaCreationDeLaFacture" layoutX="461.0" layoutY="332.0" mnemonicParsing="false" onAction="#confirmerLaCreationDeLaFacture" prefHeight="34.0" prefWidth="88.0" style="-fx-padding: 5;" stylesheets="@TP2.css" text="Confirmer" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="349.0" />
+      <Text layoutX="76.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Veuillez entrer les informations pour la facture">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Text>
+      <Label layoutX="66.0" layoutY="122.0" text="Nom de l'acheteur:" AnchorPane.leftAnchor="50.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="56.0" layoutY="172.0" text="Total sans taxes:" AnchorPane.leftAnchor="50.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="58.0" layoutY="220.0" text="Taxes applicables:" AnchorPane.leftAnchor="50.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="50.0" layoutY="270.0" text="Choisir un mode de paiement:" AnchorPane.leftAnchor="50.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <AnchorPane id="background" fx:id="detailsFacture" layoutY="-3.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="406.0" prefWidth="600.0" stylesheets="@TP2.css">
+         <children>
+            <Text layoutX="30.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dons de charité pour la facture :">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Text>
+            <MenuBar id="menuBar" layoutX="131.0" layoutY="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <menus>
+                  <Menu id="menuBar" mnemonicParsing="false" text="Facture créée">
+                     <items>
+                        <MenuItem id="menuBar" mnemonicParsing="false" text="Close" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <Button fx:id="boutonOK" layoutX="399.0" layoutY="313.0" mnemonicParsing="false" onAction="#revenirALaPageAccueil" prefHeight="32.0" prefWidth="135.0" text="OK" AnchorPane.bottomAnchor="61.0" AnchorPane.rightAnchor="66.0" AnchorPane.topAnchor="313.0" />
+            <Text layoutX="34.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Montant total de la facture:">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Text>
+            <Label fx:id="afficheTotalFacture" layoutX="379.0" layoutY="109.0" prefHeight="58.0" prefWidth="213.0" text="00" />
+            <Label fx:id="afficheChariteDUneFacture" layoutX="379.0" layoutY="187.0" prefHeight="58.0" prefWidth="213.0" text="00" />
+            <Text layoutX="183.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Voici les détails de la facture créée:" wrappingWidth="232.458984375" />
+            <AnchorPane fx:id="paneErreur" layoutX="41.0" layoutY="53.0" prefHeight="273.0" prefWidth="517.0" style="-fx-background-color: #98BFFF;">
+               <children>
+                  <Text fx:id="messageErreur" layoutX="19.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 30px;" text="Text" wrappingWidth="484.0" AnchorPane.bottomAnchor="71.470703125" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="111.626953125" />
+                  <Button fx:id="boutonOKErreur" layoutX="434.0" layoutY="230.0" mnemonicParsing="false" onAction="#OK" prefHeight="29.0" prefWidth="50.0" text="OK" />
+                  <Text layoutX="175.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 35px;" text="Erreur !!!" wrappingWidth="192.0" />
+               </children></AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
