@@ -201,9 +201,18 @@ public class CreerUneFactureGraphicalController {
                 archive.ajouterUneFacture(facture);
                 charite.calculDuTotalDesDons();
             } else if (totalSansTaxesTemp < 0) {
-                procederAuRemboursement(facture);
+                if (!procederAuRemboursement(facture)){
+                    try {
+                        throw new FactureException("Cette facture n'a pas été repéré dans les archives. Veuillez entrer le nom de l'acheteur exacte, " +
+                                "les montants exactes du total sans taxes et des taxes applicable avec un signe négatif et assurer vous " +
+                                "que le mode de paiment est identique.");
+                    } catch (FactureException e) {
+                        getMessageErreur().setText(e.getMessage());
+                        paneErreur.setVisible(true);
+                    }
+                }
             } else {
-                if(!archive.getFactures().contains(facture)){
+                if (!archive.getFactures().contains(facture)) {
                     archive.ajouterUneFacture(facture);
                 }
             }
@@ -225,21 +234,22 @@ public class CreerUneFactureGraphicalController {
      *
      * @param factureRemboursee
      */
-    public void procederAuRemboursement(FactureAvecDons factureRemboursee) {
+    public boolean procederAuRemboursement(FactureAvecDons factureRemboursee) {
         Iterator<FactureAvecDons> it = archive.getFactures().iterator();
+        boolean estRemboursee = false;
         while (it.hasNext()) {
             FactureAvecDons facture = it.next();
-            if (facture.getNomDeLAcheteur() == factureRemboursee.getNomDeLAcheteur() &&
+            if (facture.getNomDeLAcheteur().equals(factureRemboursee.getNomDeLAcheteur()) &&
                     Math.abs(facture.getTotalSansTaxes()) == Math.abs(factureRemboursee.getTotalSansTaxes()) &&
                     Math.abs(facture.getTaxesApplicablesAuMomentDeLAchat()) == Math.abs(factureRemboursee.getTaxesApplicablesAuMomentDeLAchat()) &&
                     facture.getModeDePaiement() == factureRemboursee.getModeDePaiement()) {
                 it.remove();
                 archive.ajouterUneFactureRemboursee(facture);
                 retirerLeDonDeLaFactureDuTotalDesDons(facture);
+                estRemboursee = true;
             }
         }
-        System.out.println(archive.getFactures());
-        System.out.println(archive.getFacturesRemboursees());
+        return estRemboursee;
     }
 
     public void retirerLeDonDeLaFactureDuTotalDesDons(FactureAvecDons factureRemboursee) {
@@ -248,13 +258,13 @@ public class CreerUneFactureGraphicalController {
 
     public boolean validerLeNomDeLAcheteur() {
         boolean nomValide = false;
-        Pattern pattern = Pattern.compile("\\d+");
+        Pattern pattern = Pattern.compile("^[a-zA-Z]+$");
         Matcher matcher = pattern.matcher(getNomDeLAcheteur().getText());
         try {
             //validation sur le nom
             if (getNomDeLAcheteur().getText() == "") {
-                throw new FactureException("Veuillez rentrer le nom de l'acheteur");
-            } else if ((getNomDeLAcheteur().getText()).length() < 2 || matcher.matches()) {
+                throw new FactureException("Veuillez entrer le nom de l'acheteur");
+            } else if ((getNomDeLAcheteur().getText()).length() < 2 || !matcher.matches()) {
                 throw new FactureException("Le nom de l'acheteur est invalide");
             } else {
                 nomValide = true;
@@ -269,9 +279,11 @@ public class CreerUneFactureGraphicalController {
     public boolean validerLesMontants() {
         boolean montantsValides = false;
         try {
-            if (getTotalSansTaxes().getText() == "" || getTaxesApplicables().getText() == "") {
-                throw new NumberFormatException("Veuillez remplir tous les champs");
-            } else if (!getTotalSansTaxes().getText().matches("^-?[0-9]+(\\.[0-9]+)?$") || !getTaxesApplicables().getText().matches("^-?[0-9]+(\\.[0-9]+)?$")) {
+            if (getTotalSansTaxes().getText() == "") {
+                throw new NumberFormatException("Veuillez entrer le total sans taxe");
+            } if (getTaxesApplicables().getText() == "") {
+                throw new NumberFormatException("Veuillez entrer les taxes applicables");
+            }else if (!getTotalSansTaxes().getText().matches("^-?[0-9]+(\\.[0-9]+)?$") || !getTaxesApplicables().getText().matches("^-?[0-9]+(\\.[0-9]+)?$")) {
                 throw new FactureException("Le montant total et les taxes applicables doivent contenir uniquement des chiffres, un point et/ou un signe -.");
             } else {
                 montantsValides = true;

@@ -62,12 +62,10 @@ public class  TP2Controller  extends Application {
                 return pageAccueilGraphicalController;
             }
         });
-
         Parent rootAccueil= fxmlLoaderPageAccueil.load();
         sceneAccueil = new Scene(rootAccueil, 600,400);
         primaryStage.setScene(sceneAccueil);
         primaryStage.show();
-
     }
     public static Scene getMainScene(){
         return sceneAccueil;
